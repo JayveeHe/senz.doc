@@ -180,8 +180,8 @@ publishJob本质上是两个JenkinsJob，第一个Job和testJob几乎一样，�
     ```
     senz.xxx.xxx_Pretest 
     ```；
-- ***Branch Specifier***内填写refs/tags/*，以指定一旦有新的tag产生则触发build操作；
-- 以及***Post-build Actions***的Build other projects中Projects to build填写第二个Job的项目名，并选择Trigger only if build is stable，以指定该Job完成后执行Publish Job。
+- ***Branch Specifier***内填写refs/tags/dev*（开发环境）refs/tags/prod*，以指定一旦有新的tag产生则触发build操作；
+- 以及***Post-build Actions***的Build other projects中Projects to build填写第二个Job的项目名，并选择Trigger only if build is stable，以指定该Job完成后执行Publish Job。(jenkins和github触发机制待确定。)
 
 第二个Job用来在生产环境部署代码，操作也很简单，主要区别如下：
 
@@ -229,4 +229,4 @@ Github代码管理
 ---
 我们推荐任何一个开发项目都持有两个branch，分别是***master***和***dev***。
 * 日常的项目开发和bug调试都在dev下进行，当开发出了一个新feature或者到达某个可以运行的阶段，可以push到dev分支上，触发测试流程；当需要在开发环境上进行实际运行测试，可以git tag dev，在开发环境上稳定运行一段时后，再merge到master branch上。
-* 同样的，每当项目新feature能在开发环境稳定运行后，需要发布release版，合并到maste branc，触发生产环境上的测试流程，测试通过后git tag prod_vX.X.X，正式发布到生产环境运行。
+* 同样的，每当项目新feature能在开发环境稳定运行后，需要发布release版，合并到master branch，触发生产环境上的测试流程，测试通过后git tag prod_vX.X.X（格式确定一个），正式发布到生产环境运行。
