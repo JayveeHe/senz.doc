@@ -242,3 +242,7 @@ Github代码管理
 我们推荐任何一个开发项目都持有两个branch，分别是***master***和***dev***。
 * 日常的项目开发和bug调试都在dev下进行，当开发出了一个新feature或者到达某个可以运行的阶段，可以push到dev分支上，触发测试流程；当需要在开发环境上进行实际运行测试，可以git tag dev，在开发环境上稳定运行一段时后，再merge到master branch上。
 * 同样的，每当项目新feature能在开发环境稳定运行后，需要发布release版，合并到master branch，触发生产环境上的测试流程，测试通过后git tag prod_vX.X.X（格式确定一个），正式发布到生产环境运行。
+
+Logentries的用法
+-----
+[用法][https://docs.google.com/document/d/1cFLMBGKbzqLLgDV9UD7fp2yjlBiqj1PSkFCtof_gQU0/edit]
