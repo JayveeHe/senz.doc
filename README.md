@@ -192,10 +192,12 @@ publishJob本质上是两个JenkinsJob，第一个Job和testJob几乎一样，�
 - 指定项目的代码库，和master branch
 - ***Restrict where this project can be run***和***Build Triggers***均不用选择。需要说明的是publishJob的build操作仅用向LeanCloud发送很轻量的HTTP请求即可，因此不用指定具体哪一台机器来执行这个Job，其次；而build的触发由上一个pretestJob来触发，因此不由其他触发源触发，因此也不用特殊指定。
 - ***Build下的Excute shell***里填写avoscloud部署命令，并指定使用的branch。（部署主机Aliyun上提前安装了avoscloud工具，如何使用这两个命令进行部署，详细可参见[git仓库部署][]）
+- 
     ```shell
     avoscloud deploy
     avoscloud publish
     ```
+    
 [git仓库部署]: https://leancloud.cn/docs/cloud_code_commandline.html#Git仓库部署
 
 DaoCloud CI
