@@ -160,7 +160,7 @@ Jenkins CI
 - 进入configure页面，项目名即为刚刚设定的Item name；
 - 输入github对应代码库url，来指定项目代码库；
 - 勾选Restrict where this project can be run，以限定该job最终运行环境为我们指定的机器，因为是testJob，所以部署在我们的aliyun 1服务器上，Label Expression内填***python_main_server***。你可以在主页左下方上查看Senz项目的主机情况，每个主机都有一个对应的label；
-- ***Source Code Management***选择github，并填写相应的信息，Branch Specifier内根据对应的项目环境填写*/master or */dev，以指定只检查相应branch下的变化；
+- ***Source Code Management***选择Git，并在Repository url里填写构建的project url（例如，https://github.com/petchat/petchat.app.yochat.cloud），Branch Specifier内根据对应的项目环境填写*/master or */dev，以指定只检查相应branch下的变化。####注：private项目需要添加Credentials。在Credentials里选择bboalimoe开头的key。如果想定义自己的，则点击旁边Add button。在text框中输入自己github的username和password并保存即可。
 - ***Build Triggers***选择Build when a change is pushed to GitHub，每次对应 branch上的代码发生变化时触发build下的操作；
 - ***Build下的Excute shell***中填写执行测试用例的shell脚本，例如：
 
@@ -197,6 +197,7 @@ publishJob本质上是两个JenkinsJob，第一个Job和testJob几乎一样，�
     avoscloud deploy
     avoscloud publish
     ```
+- ##注：private的github项目需要在
     
 [git仓库部署]: https://leancloud.cn/docs/cloud_code_commandline.html#Git仓库部署
 
