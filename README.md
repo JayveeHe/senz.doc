@@ -43,17 +43,18 @@ Jenkins提供了一种易于使用的持续集成系统，使开发者从繁杂�
 
 ### NodeJS后端服务（数据流操作）
 
-- 在github上***创建代码库***，该repo有两个branch，分别是master和dev，对应不同的环境。每当在某个环境中（开发环境或生环境）需要进行Mock Server测试时，使用git push branch_name；每当在某个环境需要发布最新的release版本时，使用git tag + 版本号（版本号统一使用vX.X.X的形式）；项目总需要先在开发环境下进行测试运行后，再在生产环境下进行测试和运行；
+- 在github上***创建代码库***，该repo有两个branch，分别是master和dev，对应不同的环境。每当在某个环境中（开发环境或生产环境）需要进行Mock Server测试时，使用git push branch_name；每当在某个环境需要发布最新的release版本时，使用git tag dev-[version]，e.g. git tag dev-0.0.1) 或者 git tag production-[version]并git push origin [对应tag]，将本地tag传送到github服务器,此命令会触发jenkins的部署Job实现对应环境的部署。 ；项目总需要先在开发环境下进行测试运行后，再在生产环境下进行测试和运行，参考**整体流程**；
 - 使用LeanCloud提供的最新***LeanEngine***环境开发；
 - 项目中需要加入***判断工作环境***代码，利用***环境变量***来区分现在是*生产环境*、*开发环境*还是*本地环境*（目前暂未用到，但是需要保留该关键字），不同的工作环境是完全不同的应用，从不同的branch提取代码、运行在不同的主机环境、使用不同的log系统（即不同的第三方log工具token），不同的数据库（详见下文“生产环境和开发环境”章节）。
 - 开发项目用github做代码库和版本控制（详见下文“Jenkins CI”章节），rollbar和logentries做错误处理和日志记录（详见下文“项目日志和异常处理”章节），express的supertest做单元测试（详见下文“单元测试”章节）；
-- 在LeanCloud上创建两个项目，分别命名为senz.xxx.xxx（生产环境）和dev_senz.xxx.xxx（开发环境），并分别两个项目[配置git部署][]，不同环境对应不同的git branch（生产环境对应master，开发环境对应dev）
+- 在LeanCloud上创建两个项目，分别命名为senz.xxx.xxx（生产环境）和dev@senz.xxx.xxx（开发环境），并分别在两个项目[配置git部署][]，不同环境对应不同的git branch（生产环境对应master，开发环境对应dev）
 - 在[Jenkins管理端][]***创建testJob***，每当代码库git push到某branch时，自动触发该环境下项目test事件：
     + 在部署云主机（Aliyun）创建NodeJS运行环境容器，
     + 在容器中执行Mock Server test脚本，报告测试结果（详见下文“Jenkins CI”章节）；
-- 在[Jenkins管理端][]***创建publishJob***，每当git tag dev or prod发布某个branch的最新release版本到对应环境时，自动触发该环境项目publish事件：
-    + 在部署云主（Aliyun）上执行部署命令：
+- 在[Jenkins管理端][]***创建publishJob***，每当git tag并git push后，发布某个branch的最新release版本到对应环境时，自动触发该环境项目publish事件：
+    + 在装有jenkins的部署云主机（Aliyun）上执行部署命令：
     + 启动项目部署到对应环境中（详见下文“Jenkins CI”章节）。
+
 [Jenkins管理端]: http://182.92.72.69:8080/
 [配置git部署]: https://leancloud.cn/docs/leanengine_guide-node.html#部署
 
@@ -230,3 +231,5 @@ Github代码管理
 我们推荐任何一个开发项目都持有两个branch，分别是***master***和***dev***。
 * 日常的项目开发和bug调试都在dev下进行，当开发出了一个新feature或者到达某个可以运行的阶段，可以push到dev分支上，触发测试流程；当需要在开发环境上进行实际运行测试，可以git tag dev，在开发环境上稳定运行一段时后，再merge到master branch上。
 * 同样的，每当项目新feature能在开发环境稳定运行后，需要发布release版，合并到maste branc，触发生产环境上的测试流程，测试通过后git tag prod_vX.X.X，正式发布到生产环境运行。
+
+
