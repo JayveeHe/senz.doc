@@ -108,7 +108,7 @@ Jenkins提供了一种易于使用的持续集成系统，使开发者从繁杂�
 ### 自定义错误
 为了方便日后在数据量庞大的生产环境中快速定位到我们需要查找的错误，或者对错误信息进行统计分析。我们需要简单的定义一些自己的错误类型，一般是以一个exception.py或者exception.js的形式。
 - 定义错误类型原则： 
-    + 只对该项目中***核心处理模块***定义自己的错误，而例如输入参数不合法等数据整理、准备过程中出现的一些常见错误直接catch住并抛出即可；
+    + 只对该项目中***核心处理模块***定义自己的错误，而例如输入参数不合法等数据整理、准备过程中出现的一些常见错误直接catch住并抛出自己定义的错误即可；
     + 核心处理模块中出现的任何可能的错误都尽可能merge到自己定义的错误中，保证核心模块只会抛出自己定义的错误，这样一旦核心模块出问题我们就能很很清楚的知道错误类型的范围；
     + 自己定义的错误类型不宜太多太复杂，基本描述清楚核心模块可能出错的几个环节即可。
 - 如何反馈错误：
@@ -145,7 +145,7 @@ Jenkins CI
 ---
 下面介绍一下Jenkins里的相关操作和概念，以及在代码管理上的一些建议。Enjoy it！
 根据不同项目需求，我们暂定：
-- LeanCloud项目需要创建两个实际的项目分别用于开发环境和生产环境，每个环境对应一个testJob和一个publishJob(包含两个Jenkins Jobs），因此总共会有6个Jenkins Jobs；
+- LeanCloud项目需要创建两个实际的项目分别用于开发环境和生产环境，每个环境对应一个testJob和一个publishJob(包含两个Jenkins Jobs），因此总共会有6个Jenkins Jobs（两个纯test job对应git push，一个test job和一个publish job对应git tag dev*，一个test job和一个publish job对应git tag prod*）；
 - Flask项目暂时不用在Jenkins中进行管理，所有的CI工作都在DaoCloud环境下进行。
 
 ### 如何创建testJob
@@ -164,7 +164,7 @@ Jenkins CI
 - ***Build Triggers***选择Build when a change is pushed to GitHub，每次对应 branch上的代码发生变化时触发build下的操作；
 - ***Build下的Excute shell***中填写执行测试用例的shell脚本，例如：
 
-    ```shell
+    ```##shell
     pip install -r ./flask_app/requirements.txt
     nosetests ./flask_app/test.py 
     ```
