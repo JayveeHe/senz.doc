@@ -217,7 +217,10 @@ DaoCloud主要分为两部分CI工作，分别是代码构建和持续集成
     + run daocloud.yml中before_script下的命令（在这里输出环境变量值）
     + run daocloud.yml中script下的命令（在这里执行nosetests）
 
-### 
+### 操作注意事项
+具体如何创建DaoCloud项目可以参看DaoCloud官方文档，操作流程很简单，这里只提及几点需要注意的地方：
+- 每次构建的时候需要选择***手动构建***，而***不是自动构建***，因为手动构建可以选择具体的branch；
+- 每个环境下需要对应创建一个DaoCloud项目。
 
 Github代码管理
 ---
