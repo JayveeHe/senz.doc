@@ -129,9 +129,9 @@ Jenkins提供了一种易于使用的持续集成系统，使开发者从繁杂�
 [核心模块中抛出自定义异常]: https://github.com/petchat/senz.middleware.poi.poiprob/blob/master/flask_app/poi_analyser_lib/predictor.py
 [主程序中抛出常见错误和自定义错误]: https://github.com/petchat/senz.middleware.poi.poiprob/blob/master/flask_app/app.py
 
-单元测试
+Mock Server测试
 ---
-任何项目在上线进入生产环境前都需要进行不同程度的单元测试，保证代码在各个环节都正常运行后才能投入使用。目前python flask项目采用flask自带的unittest模块进行单元测试，而NodeJS LeanCloud项目下采用express框架下的supertest。
+任何项目在上线进入生产环境前都需要进行不同程度的Mock Server测试，保证代码在各个环节都正常运行后才能投入使用。目前python flask项目采用flask自带的unittest模块进行Mock Server测试，而NodeJS LeanCloud项目下采用express框架下的supertest。
 
 - [flask项目 unittests文档][] 以及[unittests示例][]
 - [LeanCloud项目 supertest文档][] 以及[supertest示例][]
@@ -144,6 +144,9 @@ Jenkins提供了一种易于使用的持续集成系统，使开发者从繁杂�
 Jenkins CI
 ---
 下面介绍一下Jenkins里的相关操作和概念，以及在代码管理上的一些建议。Enjoy it！
+根据不同项目需求，我们暂定：
+- LeanCloud项目需要创建两个实际的项目分别用于开发环境和生产环境，每个环境对应一个testJob和一个publishJob(包含两个Jenkins Jobs），因此总共会有6个Jenkins Jobs；
+- Flask项目暂时不用在Jenkins中进行管理，所有的CI工作都在DaoCloud环境下进行。
 
 ### 如何创建testJob
 首先需要登录到我们的Senz Jenkins管理端，账号和密码见trello的[Account Card][]
@@ -151,14 +154,14 @@ Jenkins CI
 - testJob本质上是一个Jenkins Job，登录后首先点击左上角的***New Item***，来创建一个新的Jenkins Job；
 - 输入Item name，以格式
     ```
-    senz.xxx.xxx_Test 
+    senz.xxx.xxx_Test or dev_senz.xxx.xxx_Test
     ```
   选择***freestyle project***；
 - 进入configure页面，项目名即为刚刚设定的Item name；
 - 输入github对应代码库url，来指定项目代码库；
 - 勾选Restrict where this project can be run，以限定该job最终运行环境为我们指定的机器，因为是testJob，所以部署在我们的aliyun 1服务器上，Label Expression内填***python_main_server***。你可以在主页左下方上查看Senz项目的主机情况，每个主机都有一个对应的label；
-- ***Source Code Management***选择github，并填写相应的信息，Branch Specifier内填写*/master，以指定只检查master branch下的变化；
-- ***Build Triggers***选择Build when a change is pushed to GitHub，每次master branch上的代码发生变化时触发build下的操作；
+- ***Source Code Management***选择github，并填写相应的信息，Branch Specifier内根据对应的项目环境填写*/master or */dev，以指定只检查相应branch下的变化；
+- ***Build Triggers***选择Build when a change is pushed to GitHub，每次对应 branch上的代码发生变化时触发build下的操作；
 - ***Build下的Excute shell***中填写执行测试用例的shell脚本，例如：
 
     ```shell
@@ -188,17 +191,11 @@ publishJob本质上是两个JenkinsJob，第一个Job和testJob几乎一样，�
     ```
 - 指定项目的代码库，和master branch
 - ***Restrict where this project can be run***和***Build Triggers***均不用选择。需要说明的是publishJob的build操作仅用向LeanCloud发送很轻量的HTTP请求即可，因此不用指定具体哪一台机器来执行这个Job，其次；而build的触发由上一个pretestJob来触发，因此不由其他触发源触发，因此也不用特殊指定。
-- ***Build下的Excute shell***里填写请求LeanCloud后台的脚本，用curl即可，示例如下：
-
-```
-curl -X PUT -H "x-uluru-application-key:q37phyhnzh6k376oiae4stvbrklp2m9txh5yymnaxr4lr3zr" -H "x-uluru-application-id:knqxgvqzvz5qxlzy4xyu1s45kskq1x0allm6en72pi01ulw4" https://leancloud.cn/1/functions/
-
-curl -X PUT -H "x-uluru-application-key:q37phyhnzh6k376oiae4stvbrklp2m9txh5yymnaxr4lr3zr" -H "x-uluru-application-id:knqxgvqzvz5qxlzy4xyu1s45kskq1x0allm6en72pi01ulw4" https://leancloud.cn/1/functions/publishFunctions
-```
-
-注意:
-    + key和id需要改成自己项目对应的token。
-    + LeanCloud的部署命令默认从git源的master分支上拉取代码（这也是为什么一旦你push代码或者merge代码到master分支上后我们需要触发publishJob）
+- ***Build下的Excute shell***里填写avoscloud部署命令，并指定使用的branch。（部署主机Aliyun上提前安装了avoscloud工具）
+    ```shell
+    avoscloud deploy
+    avoscloud publish
+    ```
 
 DaoCloud CI
 ---
