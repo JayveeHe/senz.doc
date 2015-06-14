@@ -78,8 +78,8 @@ Jenkins提供了一种易于使用的持续集成系统，使开发者从繁杂�
 
 ### 相关配置
 不同的工作环境需要有不同的配置，主要包括：
-- 数据库：目前我们所有的数据库都是依托在LeanCloud平台上，而一个项目一般对应一个到多个LeanCloud数据库class。因此不同的工作环境我们需要使用不同的class，如果一个项目用到了N个class，那么实际应该建立2*N个class。对于生产环境的class如果命名为XXX，那么开发环境的class则为dXXX。
-- log系统：目前我们使用了logentries和rollbar两个第三方log服务，因此不同的工作环境对应不同的logentries和rollbar的token即可。
+- 数据库：目前我们所有的数据库都是依托在LeanCloud平台上，开发环境数据库为dev@开头。后面名称开发和生产一致。
+- log系统：目前我们使用了logentries和rollbar两个第三方trace服务，因此不同的工作环境对应不同的logentries和rollbar的token即可。
 - 不同的容器：对于在daocloud上的项目而言，需要为不同的工作环境配置不同的容器。（详见下文“DaoCloud CI”章节）
 
 ### 数据库备份
