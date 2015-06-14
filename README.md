@@ -154,6 +154,11 @@ Jenkins CI
 - LeanCloud项目需要创建两个实际的项目分别用于开发环境和生产环境，每个环境对应一个testJob和一个publishJob(包含两个Jenkins Jobs），因此总共会有6个Jenkins Jobs（两个纯test job对应git push，一个test job和一个publish job对应git tag dev*，一个test job和一个publish job对应git tag prod*）；
 - Flask项目暂时不用在Jenkins中进行管理，所有的CI工作都在DaoCloud环境下进行。
 
+###github webhook添加
+github要添加webhook service才能在jenkins勾选Build when a change is pushed to GitHub的条件下，通过git push触发。
+- public & private项目添加方法：在github settings里的Webhooks&services里点击 Add service。选择Jenkins（Github plugin）。然后再Jenkins hook url里填写 http://182.92.72.69:8080/github-webhook/ 。并点击add services。
+
+
 ### 如何创建testJob
 首先需要登录到我们的Senz Jenkins管理端，账号和密码见trello的[Account Card][]
 
