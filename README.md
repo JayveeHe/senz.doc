@@ -69,7 +69,7 @@ Jenkins提供了一种易于使用的持续集成系统，使开发者从繁杂�
 - 项目中需要加入***判断工作环境***代码，利用***环境变量***来区分现在是*生产环境*、*开发环境*还是*本地环境*（目前暂未用到，但是需要保留该关键字），不同的工作环境是完全不同的应用，从不同的branch提取代码、运行在不同的主机环境、使用不同的log系统（即不同的第三方log工具token），不同的数据库（详见下文“生产环境和开发环境”章节）。
 - 开发项目用github做代码库和版本控制（详见下文“Jenkins CI”章节），rollbar和logentries做错误处理和日志记录（详见下文“项目日志和异常处理”章节），flask的flask-test做mock server测试（详见下文“单元测试”章节）；
 - 编写配置flask和所需依赖环境的***Dockerfile***；（具体可以参照[这个项目][]的Dockerfile，或者想深入了解如何编写Dockerfile可以参考[docker book][]）；
-- 在***DaoCloud***上创建两个项目，分别对应开发环境和测试环境，注意：每次构建选择手动构建，不同环境下的项目对应选择不同的branch（生产环境对应master，开发环境对应dev），因为自动构建会默认从master提取代码。其他配置流程和参数保持一致（目前daocloud会在短期内改为自动构建时可以指定分支）。
+- 在***DaoCloud***上创建两个项目，分别命名为senz_xxx_xxx（生产环境）和dev_senz_xxx_xxx（开发环境），分别对应开发环境和测试环境，注意：每次构建选择手动构建，不同环境下的项目对应选择不同的branch（生产环境对应master，开发环境对应dev），因为自动构建会默认从master提取代码。其他配置流程和参数保持一致（目前daocloud会在短期内改为自动构建时可以指定分支）。
 - 在项目根目录编写***DaoCloud.yml***文件，用于指导DaoCloud进行自动化测试，具体参见[DaoCloud.yml文档][]和[DaoCloud.yml示例][]；（详见下文“DaoCloud CI”章节）
 
 [这个项目]: https://github.com/petchat/senz.template.docker.flask/blob/master/flask_app/test.py
