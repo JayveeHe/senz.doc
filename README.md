@@ -98,10 +98,11 @@ Jenkins提供了一种易于使用的持续集成系统，使开发者从繁杂�
 ---
 任何开发项目都需要对运行代码的重要输出和错误异常进行记录，我们采用logentries+rollbar组合方案来实现项目的日志记录和异常处理工作。
 - ***Rollbar*** 功能强大，可以用于记录代码输出，上传捕获和未捕获到的异常到云端。针对我们的需求，我们仅使用rollbar上传*未捕获到的异常*（Uncaught exception）的feature，本质上rollbar在项目框架上深度定制了一个middleware，以此来捕获哪些我们没有catch到的exception。可以查看[rollbar文档][]来深入了解。
-- ***Logentries*** 主要用于记录代码中的各种输出，并同样上传到服务器，提供统一友好的用户UI方便开发者浏览查找。其优势在于对输出信息进行细致的分级记录，分别包括info、warning、debug、error四个等级的日志记录类型，并且提供丰富的查询接口来方便开发者快速定位到希望查看的对应日志信息。可以查看[logentries文档][]来深入了解。
+- ***Logentries*** 主要用于记录代码中的各种输出，并同样上传到服务器，提供统一友好的用户UI方便开发者浏览查找。其优势在于对输出信息进行细致的分级记录，分别包括info、warning、debug、error四个等级的日志记录类型，并且提供丰富的查询接口来方便开发者快速定位到希望查看的对应日志信息。可以查看[logentries文档][]和[logentries使用流程][]来深入了解。
 - 目前在flask项目中rollbar和logentries之间有一定的兼容性问题，主要体现在二者都使用了python内建的logger模块来进行log消息，导致两个模块分别向自己的服务器发送log记录时出现冲突，目前解决冲突的唯一方法是***请求flask项目的http header中不加content-type字段***。该issue已经发至rollbar support。具体进展请咨询张先生。
-[rollbar文档]:https://rollbar.com/docs/
-[logentries文档]:https://logentries.com/doc/
+[rollbar文档]: https://rollbar.com/docs/
+[logentries文档]: https://logentries.com/doc/
+[logentries使用流程]: https://docs.google.com/document/d/1cFLMBGKbzqLLgDV9UD7fp2yjlBiqj1PSkFCtof_gQU0/edit
 
 ### 日志类型
 对于项目代码的输出信息我们规定包括四个级别，分别是：INFO，DEBUG，WARNING，ERROR。每个级别对应的输出信息应该是：
@@ -242,7 +243,3 @@ Github代码管理
 我们推荐任何一个开发项目都持有两个branch，分别是***master***和***dev***。
 * 日常的项目开发和bug调试都在dev下进行，当开发出了一个新feature或者到达某个可以运行的阶段，可以push到dev分支上，触发测试流程；当需要在开发环境上进行实际运行测试，可以git tag dev，在开发环境上稳定运行一段时后，再merge到master branch上。
 * 同样的，每当项目新feature能在开发环境稳定运行后，需要发布release版，合并到master branch，触发生产环境上的测试流程，测试通过后git tag prod_vX.X.X（格式确定一个），正式发布到生产环境运行。
-
-Logentries的用法
------
-[用法][https://docs.google.com/document/d/1cFLMBGKbzqLLgDV9UD7fp2yjlBiqj1PSkFCtof_gQU0/edit]
