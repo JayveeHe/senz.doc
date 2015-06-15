@@ -52,7 +52,7 @@ Jenkins提供了一种易于使用的持续集成系统，使开发者从繁杂�
 - 使用LeanCloud提供的最新***LeanEngine***环境开发；
 - 项目中需要加入***判断工作环境***代码，利用***环境变量***来区分现在是*生产环境*、*开发环境*还是*本地环境*（目前暂未用到，但是需要保留该关键字），不同的工作环境是完全不同的应用，从不同的branch提取代码、运行在不同的主机环境、使用不同的log系统（即不同的第三方log工具token），不同的数据库（详见下文“生产环境和开发环境”章节）。
 - 开发项目用github做代码库和版本控制（详见下文“Jenkins CI”章节），rollbar和logentries做错误处理和日志记录（详见下文“项目日志和异常处理”章节），express的supertest做单元测试（详见下文“单元测试”章节）；
-- 在LeanCloud上创建两个项目，分别命名为senz.xxx.xxx（生产环境）和dev@senz.xxx.xxx（开发环境），并分别在两个项目[配置git部署][]，不同环境对应不同的git branch（生产环境对应master，开发环境对应dev）
+- 在LeanCloud上创建两个项目，分别命名为senz.xxx.xxx（生产环境）和dev@senz.xxx.xxx（开发环境），将这两个项目的云代码设置下的depoly key加入到对应github repo的Deploy keys中并分别在两个项目[配置git部署][]，不同环境对应不同的git branch（生产环境对应master，开发环境对应dev）
 - 在[Jenkins管理端][]***创建testJob***，每当代码库git push到某branch时，自动触发该环境下项目test事件：
     + 在装有jenkins的部署云主机（Aliyun）创建NodeJS运行环境容器，
     + 在容器中执行Mock Server test脚本，报告测试结果（详见下文“Jenkins CI”章节）；
