@@ -237,6 +237,9 @@ DaoCloud主要分为两部分CI工作，分别是代码构建和持续集成
 具体如何创建DaoCloud项目可以参看DaoCloud官方文档，操作流程很简单，这里只提及几点需要注意的地方：
 - 每次构建的时候需要选择***手动构建***，而***不是自动构建***，因为手动构建可以选择具体的branch；
 - 每个环境下需要对应创建一个DaoCloud项目。
+- 对于比较复杂难装的依赖需要直接在yml文件中安装，而不是requirements，例如：scipy，scikit-learn，hmmlearn等算法模块，requirements中安装一些轻量简单的依赖。（因为scipy等直接pip install是装不上的，具体如何安装这些依赖可以参见[这个yml文件][]）
+
+[这个yml文件]: https://github.com/petchat/senz.middleware.poi.poiprob/blob/dev/daocloud.yml
 
 Github代码管理
 ---
