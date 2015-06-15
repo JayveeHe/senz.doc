@@ -64,7 +64,7 @@ Jenkins提供了一种易于使用的持续集成系统，使开发者从繁杂�
 
 ### Python后端服务（算法模块）
 
-- 在github上***创建代码库***，该repo有两个branch，分别是master和dev，对应不同的环境。每当在某个环境中（开发环境或生环境）需要进行Mock Server测试时，使用git push branch_name；每当在某个环境需要发布最新的release版本时，使用git tag + 版本号（版本号统一使用vX.X.X的形式）；项目总需要先在开发环境下进行测试运行后，再在生产环境下进行测试和运行；
+- 在github上***创建代码库***，该repo有两个branch，分别是master和dev，对应不同的环境。每当在某个环境中（开发环境或生产环境）需要进行Mock Server测试时，使用git push branch_name；每当在某个环境需要发布最新的release版本时，使用git tag dev-[version]，e.g. git tag dev-0.0.1) 或者 git tag production-[version]并git push origin [对应tag]，将本地tag传送到github服务器,此命令会触发DaoCloud的部署Job实现对应环境的部署。 ；项目总需要先在开发环境下进行测试运行后，再在生产环境下进行测试和运行，参考**整体流程**；
 - 使用***flask***进行开发；
 - 项目中需要加入***判断工作环境***代码，利用***环境变量***来区分现在是*生产环境*、*开发环境*还是*本地环境*（目前暂未用到，但是需要保留该关键字），不同的工作环境是完全不同的应用，从不同的branch提取代码、运行在不同的主机环境、使用不同的log系统（即不同的第三方log工具token），不同的数据库（详见下文“生产环境和开发环境”章节）。
 - 开发项目用github做代码库和版本控制（详见下文“Jenkins CI”章节），rollbar和logentries做错误处理和日志记录（详见下文“项目日志和异常处理”章节），flask的flask-test做mock server测试（详见下文“单元测试”章节）；
