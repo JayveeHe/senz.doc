@@ -51,7 +51,7 @@ Jenkins提供了一种易于使用的持续集成系统，使开发者从繁杂�
 - 在github上***创建代码库***，该repo有两个branch，分别是master和dev，对应不同的环境。每当在某个环境中（开发环境或生产环境）需要进行Mock Server测试时，使用git push branch_name；每当在某个环境需要发布最新的release版本时，使用git tag dev-[version]，e.g. git tag dev-0.0.1) 或者 git tag prod-[version]并git push origin [对应tag]，将本地tag传送到github服务器,此命令会触发jenkins的部署Job实现对应环境的部署。 ；项目总需要先在开发环境下进行测试运行后，再在生产环境下进行测试和运行，参考**整体流程**；
 - 使用LeanCloud提供的最新***LeanEngine***环境开发；
 - 项目中需要加入***判断工作环境***代码，利用***环境变量***来区分现在是*生产环境*、*开发环境*还是*本地环境*（目前暂未用到，但是需要保留该关键字），不同的工作环境是完全不同的应用，从不同的branch提取代码、运行在不同的主机环境、使用不同的log系统（即不同的第三方log工具token），不同的数据库（详见下文“生产环境和开发环境”章节）。
-- 开发项目用github做代码库和版本控制（详见下文“Jenkins CI”章节），rollbar和logentries做错误处理和日志记录（详见下文“项目日志和异常处理”章节），express的supertest做单元测试（详见下文“单元测试”章节）；
+- 开发项目用github做代码库和版本控制（详见下文“Jenkins CI”章节），bugsnag和logentries做错误处理和日志记录（详见下文“项目日志和异常处理”章节），express的supertest做单元测试（详见下文“单元测试”章节）；
 - 在LeanCloud上创建两个项目，分别命名为senz.xxx.xxx（生产环境）和dev@senz.xxx.xxx（开发环境），将这两个项目的云代码设置下的depoly key加入到对应github repo的Deploy keys中并分别在两个项目[配置git部署][]，不同环境对应不同的git branch（生产环境对应master，开发环境对应dev）
 - 在[Jenkins管理端][]***创建testJob***，每当代码库git push到某branch时，自动触发该环境下项目test事件：
     + 在装有jenkins的部署云主机（Aliyun）创建NodeJS运行环境容器，
@@ -67,7 +67,7 @@ Jenkins提供了一种易于使用的持续集成系统，使开发者从繁杂�
 - 在github上***创建代码库***，该repo有两个branch，分别是master和dev，对应不同的环境。每当在某个环境中（开发环境或生产环境）需要进行Mock Server测试时，使用git push branch_name；每当在某个环境需要发布最新的release版本时，使用git tag dev-[version]，e.g. git tag dev-0.0.1) 或者 git tag prod-[version]并git push origin [对应tag]，将本地tag传送到github服务器,此命令会触发DaoCloud的部署Job实现对应环境的部署。 ；项目总需要先在开发环境下进行测试运行后，再在生产环境下进行测试和运行，参考**整体流程**；
 - 使用***flask***进行开发；
 - 项目中需要加入***判断工作环境***代码，利用***环境变量***来区分现在是*生产环境*、*开发环境*还是*本地环境*（目前暂未用到，但是需要保留该关键字），不同的工作环境是完全不同的应用，从不同的branch提取代码、运行在不同的主机环境、使用不同的log系统（即不同的第三方log工具token），不同的数据库（详见下文“生产环境和开发环境”章节）。
-- 开发项目用github做代码库和版本控制（详见下文“Jenkins CI”章节），rollbar和logentries做错误处理和日志记录（详见下文“项目日志和异常处理”章节），flask的flask-test做mock server测试（详见下文“单元测试”章节）；
+- 开发项目用github做代码库和版本控制（详见下文“Jenkins CI”章节），bugsnag和logentries做错误处理和日志记录（详见下文“项目日志和异常处理”章节），flask的flask-test做mock server测试（详见下文“单元测试”章节）；
 - 编写配置flask和所需依赖环境的***Dockerfile***；（具体可以参照[这个项目][]的Dockerfile，或者想深入了解如何编写Dockerfile可以参考[docker book][]）；
 - 在***DaoCloud***上创建两个项目，分别命名为senz_xxx_xxx（生产环境）和dev-senz_xxx_xxx（开发环境），分别对应开发环境和测试环境，注意：每次构建选择手动构建，不同环境下的项目对应选择不同的branch（生产环境对应master，开发环境对应dev），因为自动构建会默认从master提取代码。其他配置流程和参数保持一致（目前daocloud会在短期内改为自动构建时可以指定分支）。
 - 构建完毕后，选择查看镜像进行部署，部署前需要指定环境变量：
@@ -90,7 +90,7 @@ Jenkins提供了一种易于使用的持续集成系统，使开发者从繁杂�
 ### 相关配置
 不同的工作环境需要有不同的配置，主要包括：
 - 数据库：目前我们所有的数据库都是依托在LeanCloud平台上，开发环境数据库为dev@开头。后面名称开发和生产一致。
-- log系统：目前我们使用了logentries和rollbar两个第三方trace服务，因此不同的工作环境对应不同的logentries和rollbar的token即可。
+- log系统：目前我们使用了logentries和bugsnag两个第三方trace服务，因此不同的工作环境对应不同的logentries和bugsnag的token即可。
 - 不同的容器：对于在daocloud上的项目而言，需要为不同的工作环境配置不同的容器。（详见下文“DaoCloud CI”章节）
 
 ### 数据库备份
@@ -102,11 +102,11 @@ Jenkins提供了一种易于使用的持续集成系统，使开发者从繁杂�
 
 项目日志和异常处理
 ---
-任何开发项目都需要对运行代码的重要输出和错误异常进行记录，我们采用logentries+rollbar组合方案来实现项目的日志记录和异常处理工作。
-- ***Rollbar*** 功能强大，可以用于记录代码输出，上传捕获和未捕获到的异常到云端。针对我们的需求，我们仅使用rollbar上传*未捕获到的异常*（Uncaught exception）的feature，本质上rollbar在项目框架上深度定制了一个middleware，以此来捕获哪些我们没有catch到的exception。可以查看[rollbar文档][]来深入了解。
+任何开发项目都需要对运行代码的重要输出和错误异常进行记录，我们采用logentries+bugsnag组合方案来实现项目的日志记录和异常处理工作。
+- ***Bugsnag*** 功能强大，可以用于记录代码输出，上传捕获和未捕获到的异常到云端。针对我们的需求，我们仅使用bugsnag上传*未捕获到的异常*（Uncaught exception）的feature，本质上bugsnag在项目框架上深度定制了一个middleware，以此来捕获哪些我们没有catch到的exception。可以查看[bugsnag文档][]来深入了解。
 - ***Logentries*** 主要用于记录代码中的各种输出，并同样上传到服务器，提供统一友好的用户UI方便开发者浏览查找。其优势在于对输出信息进行细致的分级记录，分别包括info、warning、debug、error四个等级的日志记录类型，并且提供丰富的查询接口来方便开发者快速定位到希望查看的对应日志信息。可以查看[logentries文档][]和[logentries使用流程][]来深入了解。
-- 目前在flask项目中rollbar和logentries之间有一定的兼容性问题，主要体现在二者都使用了python内建的logger模块来进行log消息，导致两个模块分别向自己的服务器发送log记录时出现冲突，目前解决冲突的唯一方法是***请求flask项目的http header中不加content-type字段***。该issue已经发至rollbar support。具体进展请咨询张先生。
-[rollbar文档]: https://rollbar.com/docs/
+
+[bugsnag文档]:https://bugsnag.com/docs/notifiers/python
 [logentries文档]: https://logentries.com/doc/
 [logentries使用流程]: https://docs.google.com/document/d/1cFLMBGKbzqLLgDV9UD7fp2yjlBiqj1PSkFCtof_gQU0/edit
 
@@ -126,7 +126,7 @@ Jenkins提供了一种易于使用的持续集成系统，使开发者从繁杂�
     + 自己定义的错误类型不宜太多太复杂，基本描述清楚核心模块可能出错的几个环节即可。
 - 如何反馈错误：
     + 对于我们已知的错误，无论是常见系统定义的错误还是我们自己定义的错误，都由logentries.error汇报到logentries服务端。
-    + 对于我们未知的错误，即我们没有catch住得错误，都由rollbar汇报到rollbar服务端（In fact，rollbar只用来负责汇报哪些我们无法catch到的未知错误，具体实现原理见本章“概述”）
+    + 对于我们未知的错误，即我们没有catch住得错误，都由bugsnag汇报到bugsnag服务端（In fact，bugsnag只用来负责汇报哪些我们无法catch到的未知错误，具体实现原理见本章“概述”）
 - 输出错误信息的要求：
     + exception文件中需要定义一个exception基类（这个基类继承自系统内建的exception），其他所有其他的exception类型都继承自这个基类，该基类主要负责收取当前出错时的traceback。
     + 对于一个自定义exception，首先需要继承自己定义的exception基类，然后该exception需要有接口能返回当前错误收取到的一些基本信息，例如python项目中可以用
